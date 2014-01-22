@@ -59,7 +59,7 @@ $(function(){
         });
     }
 
-    //Launch
+    //-- Launch
     markAsA(aPos);
     markAsB(bPos);
     loop();
