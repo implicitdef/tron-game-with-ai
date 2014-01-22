@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="humanVsBot.js"></script>
+        <script>
+            var playerPos = {
+                x : {{playerPos.x}},
+                y : {{playerPos.y}}
+            };
+            var serverPos = {
+                x : {{serverPos.x}},
+                y : {{serverPos.y}}
+            };
+        </script>
+        <style type="text/css">
+            body {
+                background : #C3C99D;
+            }
+            table {
+                border-collapse:collapse;
+                margin : 0 auto;
+                margin-top : 100px;
+            }
+            table td {
+                border : 1px solid #DBE3AF;
+                margin : 0;
+                padding : 0;
+                width : 20px;
+                height : 20px;
+                background : white
+            }
+        </style>
+    </head>
+    <body>
+        <table>
+            {{#initialMap}}
+            <tr>
+                {{#.}}
+                <td>
+
+                </td>
+                {{/.}}
+            </tr>
+            {{/initialMap}}
+        </table>
+
+    </body>
+</html>
