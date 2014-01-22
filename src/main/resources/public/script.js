@@ -1,5 +1,7 @@
 $(function(){
 
+    //--- Subfunctions
+
     function getCell(pos) {
         return $("table tr:nth-child(" + (pos.y + 1) +") td:nth-child(" + (pos.x + 1) +")");
     }
@@ -27,9 +29,11 @@ $(function(){
         $("#log").append("<p>" + msg + "</p>");
     }
 
-    markAsA(aPos);
-    markAsB(bPos);
 
+    //-- Core function
+    //Ask the server for the next move
+    //Display it
+    //Relaunch itself if the game is not over
     function loop(){
         $.ajax("/next").done(function(res){
             window.setTimeout(function(){
@@ -54,6 +58,10 @@ $(function(){
 
         });
     }
+
+    //Launch
+    markAsA(aPos);
+    markAsB(bPos);
     loop();
 
 });
