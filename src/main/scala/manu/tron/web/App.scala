@@ -4,6 +4,6 @@ import com.twitter.finatra._
 
 object App extends FinatraServer {
 
-  register(BotVsBotController)
+  register(IndexController)
 
 }

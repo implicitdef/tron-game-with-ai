@@ -6,11 +6,11 @@ import manu.tron.common.Direction2String._
 import manu.tron.bots.impl._
 import manu.tron.service.impl._
 
-object BotVsBotController extends Controller with ControllerUtil {
+object IndexController extends Controller with ControllerUtil {
 
 
   // Conf
-  private val templateFileName = "botVsBot.mustache"
+  private val templateFileName = "index.mustache"
   private val aPlayerId = 1
   private val bPlayerId = 2
   private val board = Board(50, 10)
