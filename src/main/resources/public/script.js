@@ -2,14 +2,50 @@ $(function(){
 
     //--- Subfunctions
 
+    var playerColors = {
+        a : 'pink',
+        b : 'blue'
+    }
+    var turns = ['ne', 'es', 'sw', 'wn'];
+
     function getCell(pos) {
         return $("table tr:nth-child(" + (pos.y + 1) +") td:nth-child(" + (pos.x + 1) +")");
     }
+    function translateDirectionLettersIntoTurn(directionLetterFrom, directionLetterTo){
+        var turn = directionLetterFrom + directionLetterTo;
+        if($.inArray(turn, turns) !== -1){
+            return turn;
+        }
+        return translateDirectionLettersIntoTurn(directionLetterTo, directionLetterFrom);
+    }
+    function translateDirectionLetterIntoAxis(directionLetter){
+        return directionLetter == 'n' || directionLetter == 's'
+               ? 'vertical'
+               : 'horizontal';
+    }
     function markAsA(pos){
-        getCell(pos).css('background', 'pink');
+        markPlayerPresence(pos, 'a');
     }
     function markAsB(pos){
-        getCell(pos).css('background', 'lightblue');
+        markPlayerPresence(pos, 'b');
+    }
+    function markPlayerPresence(pos, playerLetter){
+        getCell(pos).css('background', playerColors[playerLetter]);
+    }
+    function markPlayerStart(pos, directionLetter, playerLetter){
+        setTrackBackgroundImage(pos, playerLetter,  'start_' + directionLetter);
+    }
+    function markPlayerStraightLine(pos, directionLetter, playerLetter){
+        setTrackBackgroundImage(pos, playerLetter,  'straight_' + translateDirectionLetterIntoAxis(directionLetter));
+    }
+    function markPlayerTurn(pos, directionLetterFrom, directionLetterTo, playerLetter){
+        setTrackBackgroundImage(pos, playerLetter,  'turn_' + translateDirectionLettersIntoTurn(directionLetterFrom, directionLetterTo));
+    }
+    function setTrackBackgroundImage(pos, playerLetter, fileNameCore){
+        setBackgroundImage(pos, 'track_' + playerColors[playerLetter] + '_' + fileNameCore + '.png');
+    }
+    function setBackgroundImage(pos, fileName){
+        getCell(pos).css('background', 'url(\'img/' + fileName + '\')');
     }
     function applyMove(pos, move){
         return {
@@ -63,5 +99,6 @@ $(function(){
     markAsA(aPos);
     markAsB(bPos);
     loop();
+
 
 });
