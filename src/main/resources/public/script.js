@@ -23,17 +23,14 @@ $(function(){
                ? 'vertical'
                : 'horizontal';
     }
-    function markAsA(pos){
-        markPlayerPresence(pos, 'a');
-    }
-    function markAsB(pos){
-        markPlayerPresence(pos, 'b');
-    }
     function markPlayerPresence(pos, playerLetter){
+        console.log(arguments);
         getCell(pos).css('background', playerColors[playerLetter]);
+        console.log(getCell(pos));
+        console.log(getCell(pos).css('background'));
     }
-    function markPlayerStart(pos, directionLetter, playerLetter){
-        setTrackBackgroundImage(pos, playerLetter,  'start_' + directionLetter);
+    function markPlayerPartial(pos, directionLetter, playerLetter){
+        setTrackBackgroundImage(pos, playerLetter,  'partial_' + directionLetter);
     }
     function markPlayerStraightLine(pos, directionLetter, playerLetter){
         setTrackBackgroundImage(pos, playerLetter,  'straight_' + translateDirectionLetterIntoAxis(directionLetter));
@@ -41,11 +38,32 @@ $(function(){
     function markPlayerTurn(pos, directionLetterFrom, directionLetterTo, playerLetter){
         setTrackBackgroundImage(pos, playerLetter,  'turn_' + translateDirectionLettersIntoTurn(directionLetterFrom, directionLetterTo));
     }
+    function markByCompletingPartial(pos, directionLetterTo, playerLetter){
+        var directionLetterFrom = readOriginDirectionAtPos(pos);
+        if(isTurn(directionLetterFrom, directionLetterTo)){
+            markPlayerStraightLine(pos, directionLetterTo, playerLetter);
+        } else {
+            markPlayerTurn(pos, directionLetterFrom, directionLetterTo, playerLetter);
+        }
+    }
+    function isTurn(directionLetterFrom, directionLetterTo){
+        //TODO
+    }
+    function readOriginDirectionAtPos(pos){
+        var url = getCell(pos).css('background-image');
+        if(url.indexOf("partial") == -1){
+            console.error("trying to read the origin direction at a cell which doesn't have the 'partial' image");
+        }
+        var regexp = /.*_([ensw])\.png.*/;
+        return url.replace(regexp, "$1");
+    }
+
+
     function setTrackBackgroundImage(pos, playerLetter, fileNameCore){
         setBackgroundImage(pos, 'track_' + playerColors[playerLetter] + '_' + fileNameCore + '.png');
     }
     function setBackgroundImage(pos, fileName){
-        getCell(pos).css('background', 'url(\'img/' + fileName + '\')');
+        getCell(pos).css('background-image', 'url(\'img/' + fileName + '\')');
     }
     function applyMove(pos, move){
         return {
@@ -78,7 +96,9 @@ $(function(){
                     if(res.died){
                         log("The bot A died.");
                     } else {
-                        markAsA(aPos);
+                        //TODO complete the partial from previous Pos
+                        //TODO mark the new pos as a partial
+                        markPlayerStraightLine(aPos, "n", "a");
                         loop();
                     }
                 } else {
@@ -86,7 +106,7 @@ $(function(){
                     if(res.died){
                         log("The bot B died.");
                     } else {
-                        markAsB(bPos);
+                        markPlayerStraightLine(bPos, "e", "b");
                         loop();
                     }
                 }
@@ -95,10 +115,12 @@ $(function(){
         });
     }
 
-    //-- Launch
-    markAsA(aPos);
-    markAsB(bPos);
-    loop();
-
+    $(function(){
+        //-- Launch
+        //TODO make an image with just a dot for the very first step
+        markPlayerPartial(aPos, "n", "a");
+        markPlayerPartial(bPos, "e", "b");
+        loop();
+    });
 
 });
