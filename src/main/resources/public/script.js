@@ -83,6 +83,9 @@
     function setBackgroundImage(pos, fileName){
         getCell(pos).css('background-image', 'url(\'img/' + fileName + '\')');
     }
+    function applyBackgroundColor(pos, playerLetter){
+        getCell(pos).css('background-color', playerLetter == 'a' ? '#fdd' : '#ddf');
+    }
     function applyMove(pos, move){
         return {
             x : move == "n" || move == "s"
@@ -118,17 +121,20 @@
                     } else {
                         //display the new pos with a partial
                         markPlayerPartial(aPos, getOppositeDirection(res.move), 'a');
+                        applyBackgroundColor(aPos, 'a');
                         loop();
                     }
                 } else {
                     //complete the display of the previous pos
                     markByCompletingIntoNextDirection(bPos, res.move, 'b');
                     bPos = applyMove(bPos, res.move);
+                    getCell(bPos).css('background-color', '#ddf');
                     if(res.died){
                         log("The bot B died.");
                     } else {
                         //display the new pos with a partial
                         markPlayerPartial(bPos, getOppositeDirection(res.move), 'b');
+                        applyBackgroundColor(bPos, 'b');
                         loop();
                     }
                 }
@@ -141,6 +147,8 @@
         //-- Launch
         markPlayerStart(aPos, "a");
         markPlayerStart(bPos, "b");
+        applyBackgroundColor(aPos, 'a');
+        applyBackgroundColor(bPos, 'b');
         loop();
     });
 
