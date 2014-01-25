@@ -1,4 +1,4 @@
-$(function(){
+//$(function(){
 
     //--- Subfunctions
 
@@ -32,22 +32,40 @@ $(function(){
     function markPlayerPartial(pos, directionLetter, playerLetter){
         setTrackBackgroundImage(pos, playerLetter,  'partial_' + directionLetter);
     }
+    function markPlayerStart(pos, playerLetter){
+        setTrackBackgroundImage(pos, playerLetter, 'dot');
+    }
     function markPlayerStraightLine(pos, directionLetter, playerLetter){
         setTrackBackgroundImage(pos, playerLetter,  'straight_' + translateDirectionLetterIntoAxis(directionLetter));
     }
     function markPlayerTurn(pos, directionLetterFrom, directionLetterTo, playerLetter){
         setTrackBackgroundImage(pos, playerLetter,  'turn_' + translateDirectionLettersIntoTurn(directionLetterFrom, directionLetterTo));
     }
+    function markByCompletingIntoNextDirection(pos, directionLetterTo, playerLetter){
+        if(isDot(pos)){
+            //turn the dot into a partial
+            markPlayerPartial(pos, directionLetterTo, playerLetter);
+        } else {
+            //turn the partial into a straight line or a turn
+            markByCompletingPartial(pos, directionLetterTo, playerLetter);
+        }
+    }
     function markByCompletingPartial(pos, directionLetterTo, playerLetter){
         var directionLetterFrom = readOriginDirectionAtPos(pos);
         if(isTurn(directionLetterFrom, directionLetterTo)){
-            markPlayerStraightLine(pos, directionLetterTo, playerLetter);
-        } else {
             markPlayerTurn(pos, directionLetterFrom, directionLetterTo, playerLetter);
+        } else {
+            markPlayerStraightLine(pos, directionLetterTo, playerLetter);
         }
     }
+    function isDot(pos){
+        return getCell(pos).css('background-image').indexOf('_dot') != -1;
+    }
     function isTurn(directionLetterFrom, directionLetterTo){
-        //TODO
+        if(directionLetterFrom == "n" || directionLetterFrom == "s"){
+            return directionLetterTo == "e" || directionLetterTo == "w";
+        }
+        return directionLetterTo == "n" || directionLetterTo == "s";
     }
     function readOriginDirectionAtPos(pos){
         var url = getCell(pos).css('background-image');
@@ -57,8 +75,6 @@ $(function(){
         var regexp = /.*_([ensw])\.png.*/;
         return url.replace(regexp, "$1");
     }
-
-
     function setTrackBackgroundImage(pos, playerLetter, fileNameCore){
         setBackgroundImage(pos, 'track_' + playerColors[playerLetter] + '_' + fileNameCore + '.png');
     }
@@ -118,9 +134,9 @@ $(function(){
     $(function(){
         //-- Launch
         //TODO make an image with just a dot for the very first step
-        markPlayerPartial(aPos, "n", "a");
-        markPlayerPartial(bPos, "e", "b");
+        markPlayerStart(aPos, "a");
+        markPlayerStart(bPos, "b");
         loop();
     });
 
-});
+//});
