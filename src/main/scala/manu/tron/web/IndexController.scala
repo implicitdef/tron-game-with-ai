@@ -13,7 +13,7 @@ object IndexController extends Controller with ControllerUtil {
   private val templateFileName = "index.mustache"
   private val aPlayerId = 1
   private val bPlayerId = 2
-  private val board = Board(5, 5)
+  private val board = Board(50, 10)
   // Injections
   private val bots = Map(
     aPlayerId -> new WallHuggingBotDefinition  with GameBasicLogicServiceImpl,

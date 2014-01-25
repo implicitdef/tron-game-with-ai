@@ -23,12 +23,6 @@
                ? 'vertical'
                : 'horizontal';
     }
-    function markPlayerPresence(pos, playerLetter){
-        console.log(arguments);
-        getCell(pos).css('background', playerColors[playerLetter]);
-        console.log(getCell(pos));
-        console.log(getCell(pos).css('background'));
-    }
     function markPlayerPartial(pos, directionLetter, playerLetter){
         setTrackBackgroundImage(pos, playerLetter,  'partial_' + directionLetter);
     }
@@ -66,6 +60,14 @@
             return directionLetterTo == "e" || directionLetterTo == "w";
         }
         return directionLetterTo == "n" || directionLetterTo == "s";
+    }
+    function getOppositeDirection(directionLetter){
+        switch (directionLetter){
+            case 'n' : return 's';
+            case 's' : return 'n';
+            case 'e' : return 'w';
+            case 'w' : return 'e';
+        }
     }
     function readOriginDirectionAtPos(pos){
         var url = getCell(pos).css('background-image');
@@ -108,21 +110,25 @@
         $.ajax("/next").done(function(res){
             window.setTimeout(function(){
                 if(res.movingPlayerId == 1){
+                    //complete the display of the previous pos
+                    markByCompletingIntoNextDirection(aPos, res.move, 'a');
                     aPos = applyMove(aPos, res.move);
                     if(res.died){
                         log("The bot A died.");
                     } else {
-                        //TODO complete the partial from previous Pos
-                        //TODO mark the new pos as a partial
-                        markPlayerStraightLine(aPos, "n", "a");
+                        //display the new pos with a partial
+                        markPlayerPartial(aPos, getOppositeDirection(res.move), 'a');
                         loop();
                     }
                 } else {
+                    //complete the display of the previous pos
+                    markByCompletingIntoNextDirection(bPos, res.move, 'b');
                     bPos = applyMove(bPos, res.move);
                     if(res.died){
                         log("The bot B died.");
                     } else {
-                        markPlayerStraightLine(bPos, "e", "b");
+                        //display the new pos with a partial
+                        markPlayerPartial(bPos, getOppositeDirection(res.move), 'b');
                         loop();
                     }
                 }
@@ -133,7 +139,6 @@
 
     $(function(){
         //-- Launch
-        //TODO make an image with just a dot for the very first step
         markPlayerStart(aPos, "a");
         markPlayerStart(bPos, "b");
         loop();
