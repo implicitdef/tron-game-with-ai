@@ -9,7 +9,7 @@ class RandomizedBotDefinition extends BotDefinition {
 
   this: GameBasicLogicService =>
 
-  def nextMove(status: GameStatus, selfId: PlayerId) = {
+  override def nextMove(status: GameStatus, selfId: PlayerId) = {
     randomPick(validDirections(status, selfId)).getOrElse(anyDirection)
   }
 

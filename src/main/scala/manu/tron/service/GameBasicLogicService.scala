@@ -24,4 +24,6 @@ trait GameBasicLogicService {
 
   def neighbourhoodFull(p: Pos): Seq[Pos]
 
+  def otherPlayer(status: GameStatus, selfId: PlayerId): PlayerId
+
 }

@@ -55,6 +55,9 @@ trait GameBasicLogicServiceImpl extends GameBasicLogicService {
   def neighbourhoodFull(p: Pos) =
     neighbourhoodBySide(p) ++ neighbourhoodByDiag(p)
 
+  def otherPlayer(status: GameStatus, selfId: PlayerId): PlayerId =
+    status.playersPos.keys.find( _ != selfId ).get
+
   private def applyDirectionToXCoordinate(coordinate: Int, d: Direction) =
     d match {
       case West => coordinate - 1

@@ -9,7 +9,7 @@ class QuickBotDefinition extends BotDefinition {
 
   this: GameBasicLogicService =>
 
-  def nextMove(status: GameStatus, selfId: Vocabulary.PlayerId) =
+  override def nextMove(status: GameStatus, selfId: Vocabulary.PlayerId) =
     validDirections(status, selfId).headOption.getOrElse(anyDirection)
 
 }

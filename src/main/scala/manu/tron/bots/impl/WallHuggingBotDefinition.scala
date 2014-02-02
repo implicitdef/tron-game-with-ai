@@ -8,7 +8,7 @@ class WallHuggingBotDefinition extends BotDefinition {
 
   this: GameBasicLogicService =>
 
-  def nextMove(status: GameStatus, selfId: PlayerId) = {
+  override def nextMove(status: GameStatus, selfId: PlayerId) = {
     val p = status.playersPos.get(selfId).get
 
     validDirections(status, selfId) match {

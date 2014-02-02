@@ -5,7 +5,7 @@ import manu.tron.bots.BotDefinition
 
 class AlwaysNorthBotDefinition extends BotDefinition {
 
-  def nextMove(status: GameStatus, selfId: PlayerId) =
+  override def nextMove(status: GameStatus, selfId: PlayerId) =
     North
 
 }

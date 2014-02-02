@@ -1,7 +1,7 @@
 package manu.tron.web
 
 import com.twitter.finatra._
-import manu.tron.common.Vocabulary.Board
+import manu.tron.common.Vocabulary._
 import manu.tron.common.Direction2String._
 import manu.tron.bots.impl._
 import manu.tron.service.impl._
@@ -13,11 +13,11 @@ object IndexController extends Controller with ControllerUtil {
   private val templateFileName = "index.mustache"
   private val aPlayerId = 1
   private val bPlayerId = 2
-  private val board = Board(50, 10)
+  private val board = Board(10, 20)
   // Injections
   private val bots = Map(
-    aPlayerId -> new WallHuggingBotDefinition  with GameBasicLogicServiceImpl,
-    bPlayerId -> new WallHuggingBotDefinition  with GameBasicLogicServiceImpl
+    aPlayerId -> new TowardsOpenSpaceBotDefinition with GameBasicLogicServiceImpl with GameOperatorServiceImpl,
+    bPlayerId -> new MinimaxBotDefinition with GameBasicLogicServiceImpl with GameOperatorServiceImpl
   )
   private val service = new GameOperatorServiceImpl  with GameBasicLogicServiceImpl
   // Mutable status
@@ -53,7 +53,10 @@ object IndexController extends Controller with ControllerUtil {
   protected def buildInitialStatus() =
     service.buildInitialStatus(
       board,
-      randomInitialPoses(aPlayerId, bPlayerId, board)
+      Map(
+        aPlayerId -> Pos(0, 0),
+        bPlayerId -> Pos(board.width - 1, board.height - 1)
+      )
     )
 
 

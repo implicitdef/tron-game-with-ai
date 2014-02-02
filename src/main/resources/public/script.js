@@ -85,6 +85,7 @@
     }
     function applyBackgroundColor(pos, playerLetter){
         getCell(pos).css('background-color', playerLetter == 'a' ? '#fdd' : '#ddf');
+        getCell(pos).css('border', 0);
     }
     function applyMove(pos, move){
         return {
@@ -128,7 +129,6 @@
                     //complete the display of the previous pos
                     markByCompletingIntoNextDirection(bPos, res.move, 'b');
                     bPos = applyMove(bPos, res.move);
-                    getCell(bPos).css('background-color', '#ddf');
                     if(res.died){
                         log("The bot B died.");
                     } else {
