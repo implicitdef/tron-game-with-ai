@@ -17,7 +17,7 @@ object IndexController extends Controller with ControllerUtil {
   // Injections
   private val bots = Map(
     aPlayerId -> new TowardsOpenSpaceBotDefinition with GameBasicLogicServiceImpl with GameOperatorServiceImpl,
-    bPlayerId -> new MinimaxBotDefinition with GameBasicLogicServiceImpl with GameOperatorServiceImpl
+    bPlayerId -> new MinimaxBotDefinition with GameBasicLogicServiceImpl with GameOperatorServiceImpl with VoronoiServiceImpl
   )
   private val service = new GameOperatorServiceImpl  with GameBasicLogicServiceImpl
   // Mutable status
