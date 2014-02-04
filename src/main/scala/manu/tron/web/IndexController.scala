@@ -5,6 +5,8 @@ import manu.tron.common.Vocabulary._
 import manu.tron.common.Direction2String._
 import manu.tron.bots.impl._
 import manu.tron.service.impl._
+import manu.tron.common.Vocabulary.Board
+import manu.tron.common.Vocabulary.Pos
 
 object IndexController extends Controller with ControllerUtil {
 
@@ -13,10 +15,10 @@ object IndexController extends Controller with ControllerUtil {
   private val templateFileName = "index.mustache"
   private val aPlayerId = 1
   private val bPlayerId = 2
-  private val board = Board(10, 20)
+  private val board = Board(20, 20)
   // Injections
   private val bots = Map(
-    aPlayerId -> new TowardsOpenSpaceBotDefinition with GameBasicLogicServiceImpl with GameOperatorServiceImpl,
+    aPlayerId -> new MinimaxBotDefinition with GameBasicLogicServiceImpl with GameOperatorServiceImpl with VoronoiServiceImpl,
     bPlayerId -> new MinimaxBotDefinition with GameBasicLogicServiceImpl with GameOperatorServiceImpl with VoronoiServiceImpl
   )
   private val service = new GameOperatorServiceImpl  with GameBasicLogicServiceImpl
@@ -53,10 +55,7 @@ object IndexController extends Controller with ControllerUtil {
   protected def buildInitialStatus() =
     service.buildInitialStatus(
       board,
-      Map(
-        aPlayerId -> Pos(0, 0),
-        bPlayerId -> Pos(board.width - 1, board.height - 1)
-      )
+      randomInitialPoses(aPlayerId, bPlayerId, board)
     )
 
 

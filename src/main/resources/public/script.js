@@ -118,7 +118,7 @@
                     markByCompletingIntoNextDirection(aPos, res.move, 'a');
                     aPos = applyMove(aPos, res.move);
                     if(res.died){
-                        log("The bot A died.");
+                        log("Pink died.");
                     } else {
                         //display the new pos with a partial
                         markPlayerPartial(aPos, getOppositeDirection(res.move), 'a');
@@ -130,7 +130,7 @@
                     markByCompletingIntoNextDirection(bPos, res.move, 'b');
                     bPos = applyMove(bPos, res.move);
                     if(res.died){
-                        log("The bot B died.");
+                        log("Blue died.");
                     } else {
                         //display the new pos with a partial
                         markPlayerPartial(bPos, getOppositeDirection(res.move), 'b');

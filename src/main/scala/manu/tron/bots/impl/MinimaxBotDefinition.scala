@@ -12,7 +12,7 @@ class MinimaxBotDefinition extends BotDefinition {
 
   this: GameBasicLogicService with GameOperatorService with VoronoiService =>
 
-  private val MinimaxDepth = 3
+  private val MinimaxDepth = 1
 
   override def nextMove(status: GameStatus, selfId: PlayerId) = {
     validDirections(status, selfId) match {
