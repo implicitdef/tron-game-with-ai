@@ -8,10 +8,6 @@ object Vocabulary {
 
   type PlayerId = Int
 
-  sealed trait PlayerStatus
-  case class PlayerAliveAtPos(pos: Pos) extends PlayerStatus
-  object PlayerDead extends PlayerStatus
-
   sealed trait Direction
   object West  extends Direction
   object North extends Direction

@@ -1,13 +1,14 @@
-package manu.tron
+package manu.tron.archive
 
 import manu.tron.common.Vocabulary._
-import manu.tron.service.impl.{GameBasicLogicServiceImpl, VoronoiServiceImpl}
+import manu.tron.service.impl._
 import scala.Predef._
 import scala.Some
 import manu.tron.common.Vocabulary.Board
 import manu.tron.common.Vocabulary.Pos
 import scala.Some
 import manu.tron.common.Vocabulary.GameStatus
+import manu.tron.web.App
 
 /**
  * Created by manu on 2/3/14.
@@ -17,7 +18,7 @@ object QuickDebugger {
 
   def main(args: Array[String]): Unit = {
 
-    val service = new VoronoiServiceImpl with GameBasicLogicServiceImpl {}
+    val service = App.ComponentRegistry.voronoiService
 
     val gameStatus = GameStatus(
       Board(10, 10),
@@ -58,14 +59,6 @@ object QuickDebugger {
     ) mkString "\n"
 
   private def display(status: GameStatus): String = {
-//    case class GameStatus(
-//   board: Board,
-//   playersPos: Map[PlayerId, Pos],
-//   playersPreviousPos: Map[PlayerId, Seq[Pos]],
-//   deadPlayers: Seq[PlayerId],
-//   nextPlayerToPlay: Option[PlayerId]
-//   )
-
     val p1 = status.playersPos.keys.head
     val p2 = status.playersPos.keys.filterNot(_ == p1).head
 

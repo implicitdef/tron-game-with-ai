@@ -1,9 +1,25 @@
 package manu.tron.web
 
 import com.twitter.finatra._
+import manu.tron.bots.impl._
+import manu.tron.service.impl._
 
 object App extends FinatraServer {
 
-  register(IndexController)
+  object ComponentRegistry extends BotDefinitionComponent
+                              with GameBasicLogicServiceComponent
+                              with GameOperatorServiceComponent
+                              with VoronoiServiceComponent
+                              with IndexControllerComponent {
+
+    override val botDefinition = new BotDefinitionImpl
+    override val gameBasicLogicService = new GameBasicLogicServiceImpl
+    override val gameOperatorService = new GameOperatorServiceImpl
+    override val voronoiService = new VoronoiServiceImpl
+    override val indexController = new IndexController
+
+  }
+
+  register(ComponentRegistry.indexController)
 
 }
