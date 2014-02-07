@@ -18,7 +18,7 @@ trait BotDefinitionComponent {
 
   class BotDefinitionImpl extends BotDefinition {
 
-    private val MinimaxDepth = 1
+    private val MinimaxDepth = 5
 
     override def nextMove(status: GameStatus, selfId: PlayerId) = {
       gameBasicLogicService.validDirections(status, selfId) match {
