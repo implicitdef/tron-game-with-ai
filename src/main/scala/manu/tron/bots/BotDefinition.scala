@@ -4,6 +4,6 @@ import manu.tron.common.Vocabulary._
 
 trait BotDefinition {
 
-  def nextMove(status: GameStatus, selfId: PlayerId): Direction
+  def nextMove(status: GameStatus): Direction
 
 }

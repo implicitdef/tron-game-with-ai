@@ -43,7 +43,7 @@ trait IndexControllerComponent {
       //who's playing ?
       val playerId = currentStatus.nextPlayerToPlay.getOrElse(throw new RuntimeException("Game is over already"))
       //what's his move ?
-      val dir = bots.get(playerId).get.nextMove(currentStatus, playerId)
+      val dir = bots.get(playerId).get.nextMove(currentStatus)
       //process it
       currentStatus = gameOperatorService.applyPlayerMove(currentStatus, playerId, dir)
       val response = BotVsBotControllerResponse(
