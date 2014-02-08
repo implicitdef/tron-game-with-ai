@@ -18,7 +18,7 @@ trait BotDefinitionComponent {
 
   class BotDefinitionImpl extends BotDefinition {
 
-    private val MinimaxDepth = 5
+    private val MinimaxDepth = 2
 
     override def nextMove(status: GameStatus) =
       // launch the minimax algorithm
@@ -30,9 +30,12 @@ trait BotDefinitionComponent {
      */
     private val childsFinder: GameStatus => Map[Direction, GameStatus] =
       status =>
-        gameBasicLogicService.allDirections.map( dir =>
-          (dir, gameOperatorService.applyPlayerMove(status, status.nextPlayerToPlay.head, dir))
-        ).toMap
+        if(gameOperatorService.isGameOver(status))
+          Map.empty
+        else
+          gameBasicLogicService.allDirections.map( dir =>
+            (dir, gameOperatorService.applyPlayerMove(status, status.nextPlayerToPlay.head, dir))
+          ).toMap
 
 
 

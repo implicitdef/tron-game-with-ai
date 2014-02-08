@@ -30,25 +30,25 @@ trait MinimaxServiceComponent {
       case class ResWithMove(rate: Int, move: Direction) extends Res
       case class ResWithoutMove(rate: Int) extends Res
 
-      def recurse(status: GameStatus, depth: Int): Res = {
+      def recurse(status: GameStatus, depth: Int): Res =
         if(depth == 0)
           ResWithoutMove(heuristic(status, pointOfView))
-        else
-          childsFinder(status) match {
-            case Seq() => ResWithoutMove(heuristic(status, pointOfView))
-            case childs => {
-              val childsAndRates = childs.map {  case (move, child) =>
-                (move, recurse(child, depth - 1).rate)
-              }
-              val pick =
-                if(status.nextPlayerToPlay.head == pointOfView)
-                  childsAndRates.maxBy(_._2)
-                else
-                  childsAndRates.minBy(_._2)
-              ResWithMove(pick._2, pick._1)
+        else {
+          val childsMap = childsFinder(status)
+          if(childsMap.isEmpty)
+            ResWithoutMove(heuristic(status, pointOfView))
+          else {
+            val childsAndRates = childsMap.map {  case (move, child) =>
+              (move, recurse(child, depth - 1).rate)
             }
+            val pick =
+              if(status.nextPlayerToPlay.head == pointOfView)
+                childsAndRates.maxBy(_._2)
+              else
+                childsAndRates.minBy(_._2)
+            ResWithMove(pick._2, pick._1)
           }
-      }
+        }
 
       recurse(status, depth) match {
         case ResWithMove(_, move) => move
