@@ -20,10 +20,6 @@ trait GameBasicLogicService {
 
   def neighbourhoodBySide(p: Pos): Seq[Pos]
 
-  def neighbourhoodByDiag(p: Pos): Seq[Pos]
-
-  def neighbourhoodFull(p: Pos): Seq[Pos]
-
   def otherPlayer(status: GameStatus, selfId: PlayerId): PlayerId
 
 }

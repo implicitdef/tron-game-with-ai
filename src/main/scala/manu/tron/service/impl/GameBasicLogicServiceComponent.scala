@@ -48,17 +48,6 @@ trait GameBasicLogicServiceComponent {
     def neighbourhoodBySide(p: Pos) =
       allDirections.map(applyDirection(p, _))
 
-    def neighbourhoodByDiag(p: Pos) =
-      Vector(
-        applyDirections(p, Vector(North, West)),
-        applyDirections(p, Vector(North, East)),
-        applyDirections(p, Vector(South, West)),
-        applyDirections(p, Vector(South, East))
-      )
-
-    def neighbourhoodFull(p: Pos) =
-      neighbourhoodBySide(p) ++ neighbourhoodByDiag(p)
-
     def otherPlayer(status: GameStatus, selfId: PlayerId): PlayerId =
       status.playersPos.keys.find( _ != selfId ).get
 

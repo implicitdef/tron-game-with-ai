@@ -3,7 +3,7 @@ package manu.tron.web
 import com.twitter.finatra._
 import manu.tron.bots.impl._
 import manu.tron.service.impl._
-import manu.tron.common.Vocabulary.Board
+import manu.tron.common.Vocabulary.{Direction, GameStatus, Board}
 import manu.tron.common.Direction2String._
 
 trait IndexControllerComponent {
@@ -15,53 +15,56 @@ trait IndexControllerComponent {
 
   class IndexController extends Controller with ControllerUtil {
 
-    // Conf
     private val templateFileName = "index.mustache"
-    private val aPlayerId = 1
-    private val bPlayerId = 2
+    private val playerPlayerId = 1
+    private val botPlayerId = 2
     private val board = Board(20, 20)
-    // Bots
-    private val bots = Map(
-      aPlayerId -> botDefinition,
-      bPlayerId -> botDefinition
-    )
-    // Mutable status
-    private var currentStatus = buildInitialStatus()
+    private var currentStatus: GameStatus = buildInitialStatus
 
     get("/") { request =>
-      currentStatus = buildInitialStatus()
+      currentStatus = buildInitialStatus
       render.view(new View {
         override val template = templateFileName
         val initialMap = asSeqOfSeq(board)
-        val aPos = currentStatus.playersPos.get(aPlayerId).get
-        val bPos = currentStatus.playersPos.get(bPlayerId).get
+        val aPos = currentStatus.playersPos.get(playerPlayerId).get
+        val bPos = currentStatus.playersPos.get(botPlayerId).get
       }).toFuture
     }
 
-
     get("/next") { request =>
-      //who's playing ?
-      val playerId = currentStatus.nextPlayerToPlay.getOrElse(throw new RuntimeException("Game is over already"))
-      //what's his move ?
-      val dir = bots.get(playerId).get.nextMove(currentStatus)
-      //process it
-      currentStatus = gameOperatorService.applyPlayerMove(currentStatus, playerId, dir)
-      val response = BotVsBotControllerResponse(
-        playerId,
-        dir,
-        isDead(currentStatus, playerId)
-      )
+      val dir: Direction = readParam(request, "move")
+      currentStatus = gameOperatorService.applyPlayerMove(currentStatus, playerPlayerId, dir)
+      val response =
+        if (gameOperatorService.isGameOver(currentStatus))
+          PlayerDiedResponse
+        else {
+          val botDir: Direction = botDefinition.nextMove(currentStatus)
+          currentStatus = gameOperatorService.applyPlayerMove(currentStatus, botPlayerId, botDir)
+          if (gameOperatorService.isGameOver(currentStatus))
+            BotMovedAndDiedResponse(botDir)
+          else
+            BotMovedResponse(botDir)
+        }
       render.json(response).toFuture
     }
 
+    object PlayerDiedResponse {
+      val playerDied = true
+    }
+    case class BotMovedResponse(botMove: String) {
+      val playerDied = false
+      val botDied = false
+    }
+    case class BotMovedAndDiedResponse(botMove: String) {
+      val playerDied = false
+      val botDied = true
+    }
 
-    private def buildInitialStatus() =
+    private def buildInitialStatus =
       gameOperatorService.buildInitialStatus(
         board,
-        randomInitialPoses(aPlayerId, bPlayerId, board)
+        randomInitialPoses(playerPlayerId, botPlayerId, board)
       )
-
-
 
   }
 

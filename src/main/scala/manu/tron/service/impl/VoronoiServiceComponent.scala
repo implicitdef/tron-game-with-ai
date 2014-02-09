@@ -16,6 +16,14 @@ trait VoronoiServiceComponent {
 
   class VoronoiServiceImpl extends VoronoiService {
 
+
+
+    private case class FloodFillStatus(
+      board: Board,
+      forbiddenPos: Seq[Pos],
+      regions: Map[PlayerId, Seq[Pos]]
+    )
+
     override def computeVoronoiRegions(status: GameStatus, maxRecursionDepth: Option[Int]): Map[PlayerId, Seq[Pos]] = {
       //launch the recursion
       recursiveFloodFill(FloodFillStatus(
@@ -27,12 +35,6 @@ trait VoronoiServiceComponent {
       ).regions
     }
 
-    private case class FloodFillStatus(
-      board: Board,
-      forbiddenPos: Seq[Pos],
-      regions: Map[PlayerId, Seq[Pos]]
-    )
-
     //Performs one step of the flood fill, and recurse
     private def recursiveFloodFill(floodFillStatus: FloodFillStatus, recursionMaxDepth: Option[Int]): FloodFillStatus = {
       //all pos already used
@@ -41,14 +43,19 @@ trait VoronoiServiceComponent {
       //find all the pos into which each region should expand
       val mapNewPosForRegions = floodFillStatus.regions.mapValues( posSeq =>
         //map each pos
-        posSeq.map(
-          //to the free neighbourhood
-          gameBasicLogicService.neighbourhoodBySide(_).filter(
-            gameBasicLogicService.isPosInBoard(_, floodFillStatus.board)
-          ).filterNot(
-            nonFreePos.contains(_)
-          )
-        ).flatten.distinct
+        posSeq.flatMap(
+          //to the neighbourhood
+          gameBasicLogicService.neighbourhoodBySide(_)
+        )
+        //keep only the relevant ones
+        .filter(
+          gameBasicLogicService.isPosInBoard(_, floodFillStatus.board)
+        )
+        .filterNot(
+          nonFreePos.contains(_)
+        )
+        //and remove the duplicates
+        .distinct
       )
 
       //find all pos that are reachable par more than one region
@@ -57,10 +64,8 @@ trait VoronoiServiceComponent {
         mapNewPosForRegions.values.flatten
           //group by itself
           .groupBy(pos => pos)
-          //map to the number of occurences
-          .mapValues(_.size)
           //filter to keep only duplicates
-          .filter( _._2 > 1)
+          .filter( _._2.size > 1)
           .keySet
 
       //and exclude them

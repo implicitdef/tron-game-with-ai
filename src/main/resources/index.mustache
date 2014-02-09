@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-        <script>
+<head>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script>
         var aPos = {
             x : {{aPos.x}},
             y : {{aPos.y}}
@@ -12,22 +12,22 @@
             y : {{bPos.y}}
         };
         </script>
-        <script src="script.js"></script>
-        <link rel="stylesheet" type="text/css" href="style.css"/>
-    </head>
-    <body>
-        <table>
-            {{#initialMap}}
-            <tr>
-                {{#.}}
+    <script src="script.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css"/>
+</head>
+<body>
+<table>
+    {{#initialMap}}
+        <tr>
+            {{#.}}
                 <td>
 
                 </td>
-                {{/.}}
-            </tr>
-            {{/initialMap}}
-        </table>
-        <div id="log">
-        </div>
-    </body>
+            {{/.}}
+        </tr>
+    {{/initialMap}}
+</table>
+<div id="log">
+</div>
+</body>
 </html>

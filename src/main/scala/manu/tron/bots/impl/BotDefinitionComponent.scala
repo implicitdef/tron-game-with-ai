@@ -18,7 +18,7 @@ trait BotDefinitionComponent {
 
   class BotDefinitionImpl extends BotDefinition {
 
-    private val MinimaxDepth = 2
+    private val MinimaxDepth = 3
 
     override def nextMove(status: GameStatus) =
       // launch the minimax algorithm

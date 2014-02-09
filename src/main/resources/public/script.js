@@ -1,4 +1,7 @@
-//$(function(){
+$(function(){
+
+
+
 
     //--- Subfunctions
 
@@ -8,6 +11,28 @@
     }
     var turns = ['ne', 'es', 'sw', 'wn'];
 
+    function onUserInput(callback){
+        var listening = true;
+        $(document).keydown(function(e){
+            if(! listening){
+                return;
+            }
+            var dir = getDirectionForKeyCode(e.keyCode);
+            if (dir != null) {
+                listening = false;
+                callback(dir);
+            }
+        });
+    }
+    function getDirectionForKeyCode(keyCode){
+        switch(keyCode){
+            case 37 : return 'w';
+            case 38 : return 'n';
+            case 39 : return 'e';
+            case 40 : return 's';
+            default : return null
+        }
+    }
     function getCell(pos) {
         return $("table tr:nth-child(" + (pos.y + 1) +") td:nth-child(" + (pos.x + 1) +")");
     }
@@ -107,39 +132,33 @@
 
 
     //-- Core function
-    //Ask the server for the next move
-    //Display it
-    //Relaunch itself if the game is not over
     function loop(){
-        $.ajax("/next").done(function(res){
-            window.setTimeout(function(){
-                if(res.movingPlayerId == 1){
-                    //complete the display of the previous pos
-                    markByCompletingIntoNextDirection(aPos, res.move, 'a');
-                    aPos = applyMove(aPos, res.move);
-                    if(res.died){
-                        log("Pink died.");
-                    } else {
-                        //display the new pos with a partial
-                        markPlayerPartial(aPos, getOppositeDirection(res.move), 'a');
-                        applyBackgroundColor(aPos, 'a');
-                        loop();
-                    }
+        onUserInput(function(directionLetter){
+            markByCompletingIntoNextDirection(aPos, directionLetter, 'a');
+            aPos = applyMove(aPos, directionLetter);
+            //display the new pos with a partial
+            markPlayerPartial(aPos, getOppositeDirection(directionLetter), 'a');
+            applyBackgroundColor(aPos, 'a');
+            //ask the server
+            $.get("/next", {
+                move : directionLetter
+            }).done(function(res){
+                if(res.playerDied){
+                    log("You lost.");
                 } else {
                     //complete the display of the previous pos
-                    markByCompletingIntoNextDirection(bPos, res.move, 'b');
-                    bPos = applyMove(bPos, res.move);
-                    if(res.died){
-                        log("Blue died.");
+                    markByCompletingIntoNextDirection(bPos, res.botMove, 'b');
+                    if(res.botDied){
+                        log("The opponent lost.")
                     } else {
+                        bPos = applyMove(bPos, res.botMove);
                         //display the new pos with a partial
-                        markPlayerPartial(bPos, getOppositeDirection(res.move), 'b');
+                        markPlayerPartial(bPos, getOppositeDirection(res.botMove), 'b');
                         applyBackgroundColor(bPos, 'b');
                         loop();
                     }
                 }
-            }, 1);
-
+            });
         });
     }
 
@@ -152,4 +171,4 @@
         loop();
     });
 
-//});
+});
