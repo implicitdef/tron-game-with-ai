@@ -1,4 +1,4 @@
-package manu.tron.bots
+package manu.tron.bot
 
 import manu.tron.common.Vocabulary._
 

@@ -1,6 +1,6 @@
-package manu.tron.bots.impl
+package manu.tron.bot.impl
 
-import manu.tron.bots._
+import manu.tron.bot._
 import manu.tron.common.Vocabulary._
 import manu.tron.service.impl._
 

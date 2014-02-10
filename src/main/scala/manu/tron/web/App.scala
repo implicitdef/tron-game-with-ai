@@ -1,7 +1,7 @@
 package manu.tron.web
 
 import com.twitter.finatra._
-import manu.tron.bots.impl._
+import manu.tron.bot.impl._
 import manu.tron.service.impl._
 
 object App extends FinatraServer {
